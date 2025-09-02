@@ -5,9 +5,11 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Importar routers aquí cuando existan
-// const userRouter = require('./routers/userRouter');
-// app.use('/users', userRouter);
+const authRouter = require('./routers/authRouter');
+const excelRouter = require('./routers/excelRouter');
+
+app.use('/auth', authRouter);
+app.use('/excel', excelRouter);
 
 app.get('/', (req, res) => {
 	res.send('API funcionando correctamente');
