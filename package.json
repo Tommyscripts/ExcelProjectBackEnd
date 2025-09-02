@@ -1,0 +1,13 @@
+{
+  "name": "excelprojectbackend",
+  "version": "1.0.0",
+  "description": "Proyecto Node.js básico",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"No hay tests definidos aún\" && exit 0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
