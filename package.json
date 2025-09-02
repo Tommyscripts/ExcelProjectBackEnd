@@ -9,5 +9,12 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "express": "^5.1.0",
+    "express-validator": "^7.2.1",
+    "multer": "^2.0.2",
+    "pg": "^8.16.3"
+  }
 }
