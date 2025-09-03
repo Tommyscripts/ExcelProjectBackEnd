@@ -12,3 +12,16 @@ exports.saveExcel = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Devuelve el último dataset guardado
+exports.loadExcel = async (req, res) => {
+  try {
+    const result = await pool.query('SELECT data FROM excel_data ORDER BY created_at DESC LIMIT 1');
+    if (result.rows.length === 0) {
+      return res.json({ data: null });
+    }
+    return res.json({ data: result.rows[0].data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
