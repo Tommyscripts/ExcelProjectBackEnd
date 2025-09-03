@@ -22,21 +22,26 @@ app.listen(port, () => {
 
 // Migración ligera en arranque: crear tablas si no existen
 (async () => {
-	try {
-		await pool.query(`CREATE TABLE IF NOT EXISTS users (
-			id SERIAL PRIMARY KEY,
-			username VARCHAR(50) UNIQUE NOT NULL,
-			email VARCHAR(100) UNIQUE NOT NULL,
-			password VARCHAR(255) NOT NULL,
-			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-		);`);
-		await pool.query(`CREATE TABLE IF NOT EXISTS excel_data (
-			id SERIAL PRIMARY KEY,
-			data JSONB NOT NULL,
-			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-		);`);
-		console.log('Migraciones aplicadas');
-	} catch (err) {
-		console.error('Error aplicando migraciones:', err.message);
-	}
+  try {
+    await pool.query(`CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      username VARCHAR(50) UNIQUE NOT NULL,
+      email VARCHAR(100) UNIQUE NOT NULL,
+      password VARCHAR(255) NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );`);
+    await pool.query(`CREATE TABLE IF NOT EXISTS excel_data (
+      id SERIAL PRIMARY KEY,
+      data JSONB NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );`);
+    console.log('Migraciones aplicadas correctamente');
+  } catch (err) {
+    // Fallar silenciosamente en desarrollo si no hay DB - el fallback a archivo está activo
+    if (process.env.NODE_ENV === 'production') {
+      console.error('Error aplicando migraciones:', err.message);
+    } else {
+      console.log('Base de datos no disponible - usando modo archivo en desarrollo');
+    }
+  }
 })();
