@@ -5,7 +5,12 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "echo \"No hay tests definidos aún\" && exit 0"
+    "test": "echo \"No hay tests definidos aún\" && exit 0",
+    "pm2:start": "pm2 start src/index.js --name excel-backend",
+    "pm2:stop": "pm2 stop excel-backend",
+    "pm2:delete": "pm2 delete excel-backend",
+    "show-occupant": "bash -lc \"ss -ltnp | grep :3000 || lsof -i :3000 -sTCP:LISTEN -Pn || true\"",
+    "seed:admin": "node src/scripts/seedAdmin.js"
   },
   "keywords": [],
   "author": "",
