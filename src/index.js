@@ -3,7 +3,19 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Parse JSON bodies and x-www-form-urlencoded forms (some clients post form-encoded)
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Graceful handler for invalid JSON bodies produced by clients.
+// body-parser will pass a SyntaxError / entity.parse.failed here — catch it and reply 400.
+app.use((err, req, res, next) => {
+  if (err && (err instanceof SyntaxError || err.type === 'entity.parse.failed')) {
+    console.warn('Body parse error on', req.method, req.path, 'content-type:', req.headers['content-type']);
+    return res.status(400).json({ error: 'JSON inválido o body malformado' });
+  }
+  next(err);
+});
 
 const authRouter = require('./routers/authRouter');
 const excelRouter = require('./routers/excelRouter');
