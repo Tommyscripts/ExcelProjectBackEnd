@@ -22,6 +22,7 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
+  console.log('[auth] login attempt:', { username });
     const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
     const user = result.rows[0];
     if (!user) return res.status(400).json({ error: 'Usuario no encontrado' });

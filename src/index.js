@@ -8,7 +8,15 @@ app.use(express.json());
 const authRouter = require('./routers/authRouter');
 const excelRouter = require('./routers/excelRouter');
 const pool = require('./config/db');
+const bcrypt = require('bcryptjs');
+const cors = require('cors');
 
+// En desarrollo permitimos cualquier origen para simplificar (cambiar en producción)
+if (process.env.NODE_ENV === 'production') {
+  app.use(cors({ origin: 'http://localhost:5173' }));
+} else {
+  app.use(cors());
+}
 app.use('/auth', authRouter);
 app.use('/excel', excelRouter);
 
@@ -16,8 +24,21 @@ app.get('/', (req, res) => {
 	res.send('API funcionando correctamente');
 });
 
-app.listen(port, () => {
-	console.log(`Servidor escuchando en el puerto ${port}`);
+const host = process.env.HOST || '0.0.0.0';
+
+const server = app.listen(port, host, () => {
+  console.log(`Servidor escuchando en ${host}:${port}`);
+});
+
+server.on('error', (err) => {
+  console.error('Error en el servidor:', err && err.message ? err.message : err);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('uncaughtException:', err && err.stack ? err.stack : err);
+});
+process.on('unhandledRejection', (reason) => {
+  console.error('unhandledRejection:', reason);
 });
 
 // Migración ligera en arranque: crear tablas si no existen
@@ -36,6 +57,8 @@ app.listen(port, () => {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );`);
     console.log('Migraciones aplicadas correctamente');
+  // Nota: no se crean credenciales por defecto automáticamente en producción.
+  // Si es necesario, crear usuarios manualmente mediante migraciones o scripts seguros.
   } catch (err) {
     // Fallar silenciosamente en desarrollo si no hay DB - el fallback a archivo está activo
     if (process.env.NODE_ENV === 'production') {
