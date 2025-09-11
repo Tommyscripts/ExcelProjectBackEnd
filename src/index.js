@@ -111,6 +111,8 @@ process.on('unhandledRejection', (reason) => {
         password VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );`);
+      // Asegurarse de que la columna `role` existe (valor por defecto 'usuario')
+      await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(20) NOT NULL DEFAULT 'usuario';`);
       await pool.query(`CREATE TABLE IF NOT EXISTS excel_data (
         id SERIAL PRIMARY KEY,
         data JSONB NOT NULL,
